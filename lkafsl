@@ -1,0 +1,124 @@
+<?php 
+include('smtp/PHPMailerAutoload.php');
+
+if (isset($_POST["submit"])) {
+    $username = $_POST["username"];
+    $email = $_POST["email"];
+    $subject = $_POST["subject"];
+    $subject2 = "Regarding Your Query For E-Cell";
+    $message = $_POST["message"];
+    $message2 = "Dear $username, " ."\n"." Thank you for contacting E-cell MIET.\n\n Your mail has been sent successfully. We have received your query. You will be hearing from us in the next 2-3 working days.\n\n Regards\n\n E-Cell MIET.";
+    $to = "deepkuma3214@gmail.com";
+    $message3 = "Name: {$username} " ."\n"." Email: {$email} " ."\n"." Subject: {$subject} " ."\n"." Message: {$message}";
+    
+    // Create the first PHPMailer instance for the user's email
+    $userMail = new PHPMailer();
+    $userMail->IsSMTP(); 
+    $userMail->SMTPAuth = true; 
+    $userMail->SMTPSecure = 'tls'; 
+    $userMail->Host = "smtp.gmail.com";
+    $userMail->Port = 587; 
+    $userMail->IsHTML(true);
+    $userMail->CharSet = 'UTF-8';
+    $userMail->Username = "deepkuma3214@gmail.com";
+    $userMail->Password = "makromlaztaxgmzc";
+    $userMail->SetFrom("deepkuma3214@gmail.com");
+    $userMail->Subject = $subject2;
+    $userMail->Body = $message2;
+    $userMail->AddAddress($email);
+    $userMail->SMTPOptions = array('ssl' => array(
+        'verify_peer' => false,
+        'verify_peer_name' => false,
+        'allow_self_signed' => false
+    ));
+
+    // Send the user's email
+    if (!$userMail->Send()) {
+        echo $userMail->ErrorInfo;
+    } else {
+        echo 'User email sent successfully.';
+    }
+
+    // Create the second PHPMailer instance for your email
+    $adminMail = new PHPMailer();
+    $adminMail->IsSMTP(); 
+    $adminMail->SMTPAuth = true; 
+    $adminMail->SMTPSecure = 'tls'; 
+    $adminMail->Host = "smtp.gmail.com";
+    $adminMail->Port = 587; 
+    $adminMail->IsHTML(true);
+    $adminMail->CharSet = 'UTF-8';
+    $adminMail->SMTPDebug = 2; 
+    $adminMail->Username = "deepkuma3214@gmail.com";
+    $adminMail->Password = "makromlaztaxgmzc";
+    $adminMail->SetFrom("deepkuma3214@gmail.com");
+    $adminMail->Subject = $subject;
+    $adminMail->Body = $message3;
+    $adminMail->AddAddress($to);
+    $adminMail->SMTPOptions = array('ssl' => array(
+        'verify_peer' => false,
+        'verify_peer_name' => false,
+        'allow_self_signed' => false
+    ));
+
+    // Send your email
+    if (!$adminMail->Send()) {
+        echo $adminMail->ErrorInfo;
+    } else {
+        echo 'Admin email sent successfully.';
+    }
+}
+?>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <?php include("./common/header.php") ?>
+
+    <form action="" method="post" autocomplete="off">
+                            <div class="form-row">
+                                <div class="control-group col-sm-6">
+                                <input type="text" name="username" class="form-control p-4" placeholder="username" 
+                                        required="required" data-validation-required-message="Please enter your name" />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="control-group col-sm-6">
+                                <input type="email" name="email" class="form-control p-4" id="email" placeholder="Your Email"
+                                        required="required" data-validation-required-message="Please enter your email" />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                            <input type="text" name="subject" class="form-control p-4" id="subject" placeholder="Subject"
+                                    required="required" data-validation-required-message="Please enter a subject" />
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="control-group">
+                            <textarea name="message" class="form-control py-3 px-4" rows="5" id="message" placeholder="Message"
+                                    required="required"
+                                    data-validation-required-message="Please enter your message"></textarea>
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="text-center" >
+                            <input type="submit" name="submit" class="btn btn-primary py-3 px-4" style=" background-color:#669928;" value="Send Message" type="submit" id="sendMessageButton"  />
+                                
+                            </div>
+                        </form>
+
+                        <!-- new contact us form -->
+
+    <?php include("./common/footer.php") ?>
+
+<script src="./js/script.js"></script>
+</body>
+
+</html>
